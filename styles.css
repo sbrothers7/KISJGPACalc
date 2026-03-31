@@ -1,0 +1,200 @@
+body {
+	padding: 20px 40px;
+	font-family: Arial, Helvetica, sans-serif;
+	transition: 0.5s;
+}
+
+.dark body {
+	color: white;
+	background-color: rgb(30, 30, 30);
+}
+
+p {
+	margin: 5px 0;
+}
+
+a {
+	transition: 0.3s;
+}
+
+a:hover,
+a:active {
+	color: red;
+}
+
+a {
+	color: rgb(88, 130, 255);
+}
+
+button {
+	background-color: rgb(230, 230, 230);
+	border-radius: 2px;
+	border-width: 1px;
+	margin: 10px 0;
+	padding: 3px 10px;
+	transition: 0.3s;
+}
+
+button:hover {
+	background-color: rgb(255, 255, 255);
+	/* color: rgb(0, 0, 0);
+	border-color: white; */
+	scale: 1.02;
+}
+
+button:active {
+	scale: 1.1;
+}
+
+table {
+	border-collapse: collapse;
+	margin: 20px 0;
+	transition: 0.5s;
+}
+
+caption {
+	font-weight: bold;
+	font-size: 25px;
+	padding: 20px 0px;
+	text-align: left;
+}
+
+th {
+	padding: 5px 10px;
+	border: 1px solid rgb(30, 30, 30);
+	transition: 0.5s;
+}
+
+.dark th {
+	border: 1px solid white;
+}
+
+td {
+	border: 1px solid rgb(30, 30, 30);
+	transition: 0.5s;
+}
+
+.dark td {
+	border: 1px solid white;
+}
+
+input {
+	border: none;
+	border-radius: 0;
+	padding: 5px 10px;
+	transition: 0.5s;
+	text-align: center;
+}
+
+.dark input {
+	color: white;
+	background-color: rgb(30, 30, 30);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* IDs */
+
+#darkmode {
+	position: fixed;
+	right: 2%;
+	bottom: 2%;
+}
+
+#watermark {
+	position: fixed;
+	bottom: 2%;
+	text-align: center;
+	font-size: 8px;
+}
+
+/* Classes */
+
+.hidden {
+	display: none !important;
+}
+
+.section {
+	display: block;
+	/* justify-content: center; */
+}
+
+.container {
+	display: flex;
+	justify-content: space-around;
+	gap: 2em;
+	margin-bottom: 3em;
+}
+
+.center {
+	display: flex;
+	justify-content: center;
+}
+
+.domain {
+	padding: 5px 10px;
+	width: 62px;
+	text-align: center;
+	font-size: 14px;
+}
+
+*:disabled {
+	background-color: lightgrey;
+	color: #555;
+}
+
+.header {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+}
+
+.sidebar {
+	height: calc(100% - 5em);
+	width: 160px;
+	position: fixed;
+	z-index: 1;
+	margin: 1em;
+	top: 0;
+	left: 0;
+	background-color: #eee;
+	overflow-x: hidden;
+	/* Disable horizontal scroll */
+	padding: 1.5em;
+	border-radius: 5px;
+	transition: 0.5s;
+}
+
+.dark .sidebar {
+	background-color: #2c2c2c;
+}
+
+.main {
+	margin-left: 190px;
+	/* sidebar width */
+	padding: 0px 10px;
+}
+
+.private {
+	color: transparent;
+	background-color: #e1e1e1;
+}
+
+.private:hover {
+	color: black;
+	background-color: transparent;
+}
+
+.dark .private {
+	color: transparent !important;
+	background-color: #313131 !important;
+}
+
+.dark .private:hover {
+	color: white !important;
+	background-color: transparent !important;
+}

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="../styles.css">
+	<title>1 Year, Single Course</title>
+</head>
+
+<body>
+	<div class="sidebar">
+		<div>
+			<h1><a href="../index.html">Home</a></h1>
+
+			<p><i>Enter percentages only.</i></p>
+			<br>
+		</div>
+		<div>
+			<input type="checkbox" id="finalcheck">
+			<label for="finalcheck">Finals</label>
+			<br>
+			<input type="checkbox" id="apcheck">
+			<label for="apcheck">AP</label>
+			<br>
+			<input type="checkbox" id="yearcheck">
+			<label for="yearcheck">Full Year</label>
+		</div>
+		<br>
+		<input type="checkbox" id="privacy">
+		<label for="privacy">Privacy Mode</label>
+	</div>
+
+	<div class="main">
+		<div class="container">
+			<div class="section">
+				<table id="s1">
+					<caption>Semester 1</caption>
+					<tr>
+						<th>Formative</th>
+						<th>Summative</th>
+					</tr>
+				</table>
+
+				<table>
+					<tr>
+						<td><input id="s1f" readonly></td>
+						<td><input id="s1s" readonly></td>
+					</tr>
+				</table>
+
+				<div class="header">
+					<table>
+						<tr>
+							<th>Domain</th>
+							<td id="s1domain" class="domain"></td>
+						</tr>
+					</table>
+					<button onclick="clearSem(1)">Clear All</button>
+				</div>
+			</div>
+
+			<div id="s2container" class="hidden section">
+				<table id="s2">
+					<caption>Semester 2</caption>
+					<tr>
+						<th>Formative</th>
+						<th>Summative</th>
+					</tr>
+				</table>
+
+				<table>
+					<tr>
+						<td><input id="s2f" readonly></td>
+						<td><input id="s2s" readonly></td>
+					</tr>
+				</table>
+
+				<div class="header">
+					<table>
+						<tr>
+							<th>Domain</th>
+							<td id="s2domain" class="domain"></td>
+						</tr>
+					</table>
+					<button onclick="clearSem(2)">Clear All</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="section center">
+			<table id="final" class="hidden">
+				<caption>Finals</caption>
+				<tr>
+					<th>Final S1</th>
+					<th id="s2finalh" class="hidden">Final S2</th>
+				</tr>
+				<tr>
+					<td><input id="s1final"></td>
+					<td id="s2finalcell" class="hidden"><input id="s2final"></td>
+				</tr>
+			</table>
+		</div>
+
+		<p id="watermark"><i>This service is brought to you by Siwool Um.</i></p>
+	</div>
+	<button id="darkmode" onclick="toggleDarkMode()">Dark</button>
+</body>
+
+<script src="../script.js"></script>
+<script>
+	const final = document.getElementById("finalcheck");
+	const ap = document.getElementById("apcheck");
+	const fullyear = document.getElementById("yearcheck");
+	const privacy = document.getElementById("privacy");
+
+	const finalTable = document.getElementById("final");
+	const s2final = document.getElementById("s2final");
+
+	function updateFinalTable() {
+		if (final.checked) finalTable.classList.remove("hidden");
+		else finalTable.classList.add("hidden");
+	}
+
+	// init
+	setupSemester("s1", 1);
+	setupSemester("s2", 2);
+	for (let i = 0; i < 6; i++) { addRow("s1"); addRow("s2") };
+
+	makeNavTable("s1");
+	makeNavTable("s2");
+
+	// EventListeners
+	final.addEventListener("change", (e) => {
+		updateFinalTable();
+	});
+
+	finalTable.addEventListener("change", (e) => {
+		calcDomainSem(1);
+		calcDomainSem(2);
+	});
+
+	ap.addEventListener("change", (e) => {
+		if (ap.checked) {
+			final.checked = true;
+			updateFinalTable();
+			final.disabled = true;
+
+			s2final.value = "No finals for S2"
+			s2final.disabled = true;
+		}
+		else {
+			final.disabled = false;
+			s2final.value = ""
+			s2final.disabled = false;
+		}
+	});
+
+	fullyear.addEventListener("change", (e) => {
+		document.getElementById("s2finalh").classList.toggle("hidden");
+		document.getElementById("s2finalcell").classList.toggle("hidden");
+		document.getElementById("s2container").classList.toggle("hidden");
+	});
+
+	privacy.addEventListener("change", (e) => {
+		togglePrivacy();
+	});
+</script>
+
+</html>
