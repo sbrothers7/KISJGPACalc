@@ -1,9 +1,9 @@
 window.onload = () => {
-	// const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
-	// if (darkThemeMq.matches) {
-	// 	toggleDarkMode();
-	// 	document.cookie = "darkmode=true";
-	// }
+	const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
+	if (darkThemeMq.matches) {
+		toggleDarkMode();
+		document.cookie = "darkmode=true";
+	}
 	if (getCookie("darkmode") == "true") toggleDarkMode();
 }
 
@@ -11,7 +11,17 @@ window.addEventListener('unload', function () {
 	document.documentElement.innerHTML = '';
 }); // fix memory increase after reload
 
-function addRow(id) {
+function addRows(id, nInput) { // id of target table, id of input field
+	const temp = document.getElementById(nInput);
+	if (temp.value > 10) temp.value = 10; // limit max rows to 10 at a time
+	for (let i = 0; i < temp.value; i++) {
+		addRow(id, false);
+	}
+	makeNavTable(id);
+	temp.value = 1;
+}
+
+function addRow(id, autoupdate = false) {
 	const table = document.getElementById(id);
 	const row = document.createElement("tr");
 	table.append(row);
@@ -33,6 +43,8 @@ function addRow(id) {
 	sInput.type = "number";
 	fInput.autocomplete = "off";
 	sInput.autocomplete = "off";
+
+	if (autoupdate) makeNavTable(id);
 }
 
 function setupSemester(tableId, semester) {
@@ -100,7 +112,6 @@ function convertToLetter(percentage) {
 	return "NG";
 }
 
-
 // adapted from vipranarayan14/navigable-table.html
 function makeNavTable(tableId, activeCell = 0) {
 	const table = document.getElementById(tableId);
@@ -136,7 +147,7 @@ function makeNavTable(tableId, activeCell = 0) {
 	}
 
 
-	table.addEventListener('keydown', function (e) {
+	table.addEventListener("keydown", function (e) {
 		if (
 			e.key == "ArrowDown" ||
 			e.key == "ArrowUp" ||

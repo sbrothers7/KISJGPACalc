@@ -1,7 +1,7 @@
 body {
 	padding: 20px 40px;
 	font-family: Arial, Helvetica, sans-serif;
-	transition: 0.5s;
+	transition: 0.3s;
 }
 
 .dark body {
@@ -10,6 +10,7 @@ body {
 }
 
 p {
+	font-size: 15px;
 	margin: 5px 0;
 }
 
@@ -49,7 +50,7 @@ button:active {
 table {
 	border-collapse: collapse;
 	margin: 20px 0;
-	transition: 0.5s;
+	transition: 0.3s;
 }
 
 caption {
@@ -62,7 +63,7 @@ caption {
 th {
 	padding: 5px 10px;
 	border: 1px solid rgb(30, 30, 30);
-	transition: 0.5s;
+	transition: 0.3s;
 }
 
 .dark th {
@@ -71,7 +72,7 @@ th {
 
 td {
 	border: 1px solid rgb(30, 30, 30);
-	transition: 0.5s;
+	transition: 0.3s;
 }
 
 .dark td {
@@ -82,8 +83,12 @@ input {
 	border: none;
 	border-radius: 0;
 	padding: 5px 10px;
-	transition: 0.5s;
+	transition: 0.3s;
 	text-align: center;
+}
+
+label {
+	font-size: 15px;
 }
 
 .dark input {
@@ -95,6 +100,16 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
+}
+
+input.addRow {
+	border: 1px solid black;
+	width: 1.2em;
+	padding: 2px;
+}
+
+.dark input.addRow {
+	border: 1px solid white;
 }
 
 /* IDs */
@@ -151,6 +166,13 @@ input::-webkit-inner-spin-button {
 	align-items: center;
 	display: flex;
 	justify-content: space-between;
+	gap: 1em;
+}
+
+.inlineflex {
+	display: inline-flex;
+	gap: 0.5em;
+	align-items: center;
 }
 
 .sidebar {
@@ -166,7 +188,7 @@ input::-webkit-inner-spin-button {
 	/* Disable horizontal scroll */
 	padding: 1.5em;
 	border-radius: 5px;
-	transition: 0.5s;
+	transition: 0.3s;
 }
 
 .dark .sidebar {
