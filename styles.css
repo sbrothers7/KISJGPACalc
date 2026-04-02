@@ -1,6 +1,7 @@
 body {
 	padding: 20px 40px;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: 'Inter', sans-serif;
+	font-weight: 400;
 	transition: 0.3s;
 }
 
@@ -9,9 +10,17 @@ body {
 	background-color: rgb(30, 30, 30);
 }
 
+h1,
+h2,
+h3 {
+	font-weight: 600;
+	letter-spacing: -0.02em
+}
+
 p {
-	font-size: 15px;
+	font-size: 14px;
 	margin: 5px 0;
+	font-weight: 300;
 }
 
 a {
@@ -20,27 +29,37 @@ a {
 
 a:hover,
 a:active {
-	color: red;
+	color: rgb(40, 85, 223);
 }
 
 a {
-	color: rgb(88, 130, 255);
+	color: rgb(225, 26, 26);
 }
 
 button {
-	background-color: rgb(230, 230, 230);
-	border-radius: 2px;
+	background-color: #e3e3e3;
+	border-radius: 4px;
 	border-width: 1px;
 	margin: 10px 0;
-	padding: 3px 10px;
+	padding: 5px 12px;
 	transition: 0.3s;
 }
 
 button:hover {
-	background-color: rgb(255, 255, 255);
-	/* color: rgb(0, 0, 0);
-	border-color: white; */
+	background-color: #303030;
+	color: white;
 	scale: 1.02;
+}
+
+.dark button {
+	background-color: #2c2c2c;
+	border: 1px solid #ccc;
+	color: white;
+}
+
+.dark button:hover {
+	background-color: #e3e3e3;
+	color: black;
 }
 
 button:active {
@@ -112,12 +131,22 @@ input.addRow {
 	border: 1px solid white;
 }
 
-/* IDs */
+/* ================ IDs ================ */
 
 #darkmode {
 	position: fixed;
 	right: 2%;
 	bottom: 2%;
+	padding: 8px 8px;
+	border-radius: 10px;
+}
+
+#darkmode:hover {
+	scale: 1.1;
+}
+
+#darkmode:active {
+	scale: 1.2;
 }
 
 #watermark {
@@ -130,6 +159,7 @@ input.addRow {
 /* Classes */
 
 .hidden {
+	transition: 0.3s;
 	display: none !important;
 }
 
@@ -176,8 +206,8 @@ input.addRow {
 }
 
 .sidebar {
-	height: calc(100% - 5em);
-	width: 160px;
+	height: calc(100% - 3em);
+	width: max(13%, 160px);
 	position: fixed;
 	z-index: 1;
 	margin: 1em;
@@ -186,9 +216,14 @@ input.addRow {
 	background-color: #eee;
 	overflow-x: hidden;
 	/* Disable horizontal scroll */
-	padding: 1.5em;
+	padding: 0.5em 1.5em;
 	border-radius: 5px;
 	transition: 0.3s;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: start;
+	gap: 3em;
 }
 
 .dark .sidebar {
@@ -196,7 +231,7 @@ input.addRow {
 }
 
 .main {
-	margin-left: 190px;
+	margin-left: max(calc(13% + 2em), 190px);
 	/* sidebar width */
 	padding: 0px 10px;
 }
@@ -213,10 +248,21 @@ input.addRow {
 
 .dark .private {
 	color: transparent !important;
-	background-color: #313131 !important;
+	background-color: #303030 !important;
 }
 
 .dark .private:hover {
 	color: white !important;
 	background-color: transparent !important;
+}
+
+
+.dark .indicatorSun,
+.indicatorMoon {
+	display: block;
+}
+
+.dark .indicatorMoon,
+.indicatorSun {
+	display: none;
 }
