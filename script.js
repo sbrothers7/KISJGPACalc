@@ -2,13 +2,39 @@ window.onload = () => {
 	const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
 	if (darkThemeMq.matches) {
 		toggleDarkMode();
-		document.cookie = "darkmode=true";
 	}
 	if (getCookie("darkmode") == "true") toggleDarkMode();
+	checkVersion();
+}
+
+async function checkVersion() {
+	try {
+		const res = await fetch('/version.json?t=' + Date.now());
+		const { version } = await res.json();
+
+		const stored = sessionStorage.getItem('appVersion');
+
+		if (!stored) {
+			sessionStorage.setItem('appVersion', version);
+			return;
+		}
+
+		if (version !== stored) {
+			sessionStorage.setItem('appVersion', version);
+			window.location.reload(true);
+		}
+	} catch (e) { }
 }
 
 window.addEventListener('unload', function () {
-	document.documentElement.innerHTML = '';
+	window.addEventListener('unload', function () {
+		// remove heavy listeners
+		document.querySelectorAll('table').forEach(t => {
+			const clone = t.cloneNode(false);
+			t.parentNode.replaceChild(clone, t);
+		});
+		document.documentElement.innerHTML = '';
+	});
 }); // fix memory increase after reload
 
 function addRows(id, nInput) { // id of target table, id of input field
@@ -116,6 +142,8 @@ function convertToLetter(percentage) {
 function makeNavTable(tableId, activeCell = 0) {
 	const table = document.getElementById(tableId);
 
+	if (!table._navInitialized) table._navInitialized = true;
+
 	table.addEventListener('focus', function () {
 		var focusedTable = document.querySelector('#' + table + ':focus');
 		if (focusedTable) focusedTable.style.outline = 'none';
@@ -133,17 +161,19 @@ function makeNavTable(tableId, activeCell = 0) {
 		if (!cells[i].innerHTML) {
 			cells[i].innerHTML = i;
 		}
-		cells[i].addEventListener('click', function (e) {
-			// console.log(e.target.nodeName);
-			if (e.target.nodeName == "INPUT") { // fix clicking on input failing to update active cell
-				active = Array.prototype.indexOf.call(cells, e.target.parentNode);
-			}
-			else if (e.target.nodeName == "TD") {
-				active = Array.prototype.indexOf.call(cells, e.target);
-			}
-			else return;
-			makeCellActive();
-		});
+		if (!cells[i]._clickInitialized) {
+			cells[i].addEventListener('click', function (e) {
+				// console.log(e.target.nodeName);
+				if (e.target.nodeName == "INPUT") { // fix clicking on input failing to update active cell
+					active = Array.prototype.indexOf.call(cells, e.target.parentNode);
+				}
+				else if (e.target.nodeName == "TD") {
+					active = Array.prototype.indexOf.call(cells, e.target);
+				}
+				else return;
+				makeCellActive();
+			});
+		}
 	}
 
 

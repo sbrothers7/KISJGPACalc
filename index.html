@@ -2,27 +2,38 @@
 <html lang="en">
 
 <head>
+	<title>GPA Calculator</title>
+
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Pragma" content="no-cache">
+
 	<link rel="stylesheet" type="text/css" href="styles.css">
-	<title>GPA Calculator</title>
 	<link rel="icon" href="img/icon.png" type="image/x-icon">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
-	<h1>KISJ HS GPA Calculator</h1>
+	<div class="section" style="width: max(50%, 400px)">
+		<h1>KISJ HS GPA Calculator</h1>
+		<h2>Quick Calculations</h2>
+		<ul>
+			<p><a href="quickCalc/scs.html">Course Grade</a></p>
+			<!-- <p><a href="quickCalc/1ygpa.html">1 Year, GPA</a></p> -->
+		</ul>
 
-	<h2>Quick Calculations</h2>
-	<ul>
-		<p><a href="quickCalc/scs.html">Single Course, Score</a></p>
-		<!-- <p><a href="quickCalc/1ygpa.html">1 Year, GPA</a></p> -->
-	</ul>
+		<!-- <h2>GPA Tracker</h2> -->
+		<p id="watermark"><i>Copyright © 2026 Siwool Um</i></p>
 
-	<!-- <h2>GPA Tracker</h2> -->
-
-	<p id="watermark"><i>This service is brought to you by Siwool Um.</i></p>
+		<h2>Notes</h2>
+		<h3>v1.0.7b</h3>
+		<ul>
+			<p>Auto update implemented</p>
+			<p>UI update</p>
+			<p>Fixed memory problems</p>
+		</ul>
+	</div>
 
 	<button id="darkmode" onclick="toggleDarkMode()">
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"

@@ -2,10 +2,13 @@
 <html lang="en">
 
 <head>
+	<title>Course Grade Calculation</title>
+
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Pragma" content="no-cache">
+
 	<link rel="stylesheet" type="text/css" href="../styles.css">
-	<title>1 Year, Single Course</title>
 	<link rel="icon" href="../img/icon.png" type="image/x-icon">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -20,8 +23,8 @@
 		</div>
 
 		<div>
-			<h3>Configuration</h3>
 			<hr>
+			<h3>Configuration</h3>
 			<input type="checkbox" id="finalcheck">
 			<label for="finalcheck">Finals</label>
 			<br>
@@ -33,7 +36,6 @@
 			<br>
 			<input type="checkbox" id="privacy">
 			<label for="privacy">Privacy Mode</label>
-			<hr>
 		</div>
 
 		<div class="inlineflex">
@@ -117,7 +119,7 @@
 			</table>
 		</div>
 
-		<p id="watermark"><i>This service is brought to you by Siwool Um.</i></p>
+		<p id="watermark"><i>Copyright © 2026 Siwool Um</i></p>
 	</div>
 	<button id="darkmode" onclick="toggleDarkMode()">
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -157,40 +159,34 @@
 	makeNavTable("s2");
 
 	// EventListeners
-	final.addEventListener("change", (e) => {
-		updateFinalTable();
-	});
+	final.addEventListener("change", updateFinalTable);
 
-	finalTable.addEventListener("change", (e) => {
+	finalTable.addEventListener("change", () => {
 		calcDomainSem(1);
 		calcDomainSem(2);
 	});
 
-	ap.addEventListener("change", (e) => {
+	ap.addEventListener("change", () => {
 		if (ap.checked) {
 			final.checked = true;
-			updateFinalTable();
 			final.disabled = true;
-
-			s2final.value = "No finals for S2"
+			s2final.value = "No finals for S2";
 			s2final.disabled = true;
-		}
-		else {
+		} else {
 			final.disabled = false;
-			s2final.value = ""
+			s2final.value = "";
 			s2final.disabled = false;
 		}
+		updateFinalTable();
 	});
 
-	fullyear.addEventListener("change", (e) => {
+	fullyear.addEventListener("change", () => {
 		document.getElementById("s2finalh").classList.toggle("hidden");
 		document.getElementById("s2finalcell").classList.toggle("hidden");
 		document.getElementById("s2container").classList.toggle("hidden");
 	});
 
-	privacy.addEventListener("change", (e) => {
-		togglePrivacy();
-	});
+	privacy.addEventListener("change", togglePrivacy);
 
 	document.getElementById("addValue").addEventListener("keydown", (e) => {
 		if (e.key == "Enter") {
