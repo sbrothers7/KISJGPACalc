@@ -80,7 +80,7 @@
 
     .sidebar {
         margin: 0;
-        width: calc(100vw - 5em);
+        width: calc(100vw - 6em);
         height: calc(100vh);
     }
 

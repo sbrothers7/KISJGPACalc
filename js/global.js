@@ -1,3 +1,15 @@
+const isMobile = () => window.innerWidth <= 768;
+let darkmodeState;
+
+window.onload = () => {
+    const savedState = localStorage.getItem("darkmode");
+    if (savedState == "true") darkmodeState = 1;
+    else if (savedState == "false") darkmodeState = 0;
+    else darkmodeState = 2; // follow system
+    toggleDarkMode();
+    checkVersion();
+}
+
 window.addEventListener('unload', function () {
     window.addEventListener('unload', function () {
         // remove heavy listeners
@@ -8,17 +20,6 @@ window.addEventListener('unload', function () {
         document.documentElement.innerHTML = '';
     });
 }); // fix memory increase after reload
-
-const isMobile = () => window.innerWidth <= 768;
-
-window.onload = () => {
-    const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
-    if (darkThemeMq.matches) {
-        toggleDarkMode();
-    }
-    if (getCookie("darkmode") == "true") toggleDarkMode();
-    checkVersion();
-}
 
 // cookie stuff
 function setCookie(cname, cvalue, exdays) {
@@ -40,24 +41,51 @@ function getCookie(cookieName) {
 }
 
 function toggleDarkMode() {
-    document.documentElement.classList.toggle("dark");
-    setCookie("darkmode", document.documentElement.classList.contains("dark"), 365);
+    const target = document.documentElement;
+    const icons = [
+        document.querySelector(".indicatorMoon"),
+        document.querySelector(".indicatorSystem"),
+        document.querySelector(".indicatorSun")
+    ]
+    switch (darkmodeState % 3) {
+        case 0:
+            target.classList.remove("dark");
+            localStorage.setItem("darkmode", "false");
+            break;
+        case 1:
+            target.classList.add("dark");
+            localStorage.setItem("darkmode", "true");
+            break;
+        case 2:
+            const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
+            if (darkThemeMq.matches) target.classList.add("dark");
+            else target.classList.remove("dark");
+            localStorage.setItem("darkmode", "system");
+            break;
+        default: target.classList.remove("dark");
+    }
+
+    for (let i = 0; i < icons.length; i++) {
+        if (darkmodeState % 3 == i) icons[i].classList.remove("hidden");
+        else icons[i].classList.add("hidden");
+    }
+    darkmodeState++;
 }
 
 async function checkVersion() {
     try {
-        const res = await fetch('/version.json?t=' + Date.now());
+        const res = await fetch("/KISJGPACalc/version.json?t=" + Date.now());
         const { version } = await res.json();
 
-        const stored = sessionStorage.getItem('appVersion');
+        const stored = sessionStorage.getItem("appVersion");
 
         if (!stored) {
-            sessionStorage.setItem('appVersion', version);
+            sessionStorage.setItem("appVersion", version);
             return;
         }
 
         if (version !== stored) {
-            sessionStorage.setItem('appVersion', version);
+            sessionStorage.setItem("appVersion", version);
             window.location.reload(true);
         }
     } catch (e) { }

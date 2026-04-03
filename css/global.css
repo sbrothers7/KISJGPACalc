@@ -12,11 +12,18 @@ h3 {
     line-height: 1.4;
 }
 
-p {
+p,
+li {
     font-size: 14px;
     margin: 5px 0;
     font-weight: 300;
     line-height: 1.8;
+}
+
+summary {
+    font-size: 18px;
+    line-height: 1.8;
+    font-weight: 600;
 }
 
 a {
@@ -112,8 +119,9 @@ input.addRow {
     position: fixed;
     right: 1.2em;
     bottom: 1em;
-    padding: 8px 8px;
+    padding: 9px 9px;
     border-radius: 10px;
+    line-height: 0;
 }
 
 #darkmode:hover {
