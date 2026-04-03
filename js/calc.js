@@ -1,41 +1,22 @@
-window.onload = () => {
-	const darkThemeMq = window.matchMedia("(prefers-color-scheme: dark)");
-	if (darkThemeMq.matches) {
-		toggleDarkMode();
+// mobile UI
+if (isMobile()) {
+	toggleSidebar();
+}
+
+// resized to mobile UI
+window.addEventListener('resize', () => {
+	const collapsed = document.querySelector(".sidebar").classList.contains("collapsed");
+	if (isMobile()) {
+		if (!collapsed) {
+			toggleSidebar();
+		}
 	}
-	if (getCookie("darkmode") == "true") toggleDarkMode();
-	checkVersion();
-}
-
-async function checkVersion() {
-	try {
-		const res = await fetch('/version.json?t=' + Date.now());
-		const { version } = await res.json();
-
-		const stored = sessionStorage.getItem('appVersion');
-
-		if (!stored) {
-			sessionStorage.setItem('appVersion', version);
-			return;
+	else {
+		if (collapsed) {
+			toggleSidebar();
 		}
-
-		if (version !== stored) {
-			sessionStorage.setItem('appVersion', version);
-			window.location.reload(true);
-		}
-	} catch (e) { }
-}
-
-window.addEventListener('unload', function () {
-	window.addEventListener('unload', function () {
-		// remove heavy listeners
-		document.querySelectorAll('table').forEach(t => {
-			const clone = t.cloneNode(false);
-			t.parentNode.replaceChild(clone, t);
-		});
-		document.documentElement.innerHTML = '';
-	});
-}); // fix memory increase after reload
+	}
+});
 
 function addRows(id, nInput) { // id of target table, id of input field
 	const temp = document.getElementById(nInput);
@@ -85,11 +66,6 @@ function setupSemester(tableId, semester) {
 	});
 }
 
-function toggleDarkMode() {
-	document.documentElement.classList.toggle("dark");
-	setCookie("darkmode", document.documentElement.classList.contains("dark"), 365);
-}
-
 function calcColAvg(id) {
 	const values = document.getElementsByClassName(id);
 	let total = 0;
@@ -129,13 +105,23 @@ function calcDomainSem(semester, final = document.getElementById("finalcheck").c
 	}
 }
 
+// conversions
+const pBoundaries = [98, 93, 90, 87, 83, 80, 77, 73, 70, 67, 63, 60, 50];
+const letterGrade = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F"];
+const point = [4, 4, 3.67, 3.33, 3, 2.67, 2.33, 2, 1.67, 1.33, 1, 0.67, 0.33, 0];
+
 function convertToLetter(percentage) {
-	const pref = [98, 93, 90, 87, 83, 80, 77, 73, 70, 67, 63, 60, 50];
-	const letter = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F"];
 	for (let i = 0; i < 13; i++) {
-		if (Math.round(percentage) >= pref[i]) return letter[i];
+		if (Math.round(percentage) >= pBoundaries[i]) return letterGrade[i];
 	}
 	return "NG";
+}
+
+function convertToPoints(letter) {
+	for (let i = 0; i < letterGrade.length; i++) {
+		if (letterGrade[i] == letter) return point[i];
+	}
+	return 0;
 }
 
 // adapted from vipranarayan14/navigable-table.html
@@ -231,27 +217,8 @@ function makeNavTable(tableId, activeCell = 0) {
 	}
 }
 
-// cookie stuff
-function setCookie(cname, cvalue, exdays) {
-	const d = new Date();
-	d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-	let expires = "expires=" + d.toUTCString();
-	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
-function getCookie(cookieName) {
-	const cookies = document.cookie.split('; ');
-	for (const cookie of cookies) {
-		const [name, value] = cookie.split('=');
-		if (name === cookieName) {
-			return decodeURIComponent(value);
-		}
-	}
-	return null;
-}
-
 function togglePrivacy() {
-	const targets = Array.from(document.querySelectorAll("input")).concat(Array.from(document.querySelectorAll(".domain")));
+	const targets = Array.from(document.querySelectorAll("input")).concat(Array.from(document.querySelectorAll(".result")));
 	for (let i = 0; i < targets.length; i++) targets[i].classList.toggle("private");
 }
 
@@ -267,4 +234,28 @@ function clearSem(semester) {
 	document.getElementById(`s${semester}s`).value = "";
 	document.getElementById(`s${semester}domain`).innerHTML = "";
 
+}
+
+function toggleSidebar() {
+	const sidebar = document.querySelector(".sidebar");
+	const sidebarAnchor = document.querySelector(".sidebar-anchor");
+
+	sidebar.classList.toggle("collapsed");
+	sidebarAnchor.classList.toggle("collapsed");
+
+	const close = document.querySelector(".closeicon");
+	const expand = document.querySelector(".expandicon");
+	close.classList.toggle("hidden");
+	expand.classList.toggle("hidden");
+
+	if (isMobile()) {
+		if (sidebar.classList.contains("collapsed")) {
+			document.querySelector(".main").classList.remove("hidden");
+			document.querySelector("#darkmode").classList.remove("hidden");
+		}
+		else {
+			document.querySelector(".main").classList.add("hidden");
+			document.querySelector("#darkmode").classList.add("hidden");
+		}
+	}
 }

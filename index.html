@@ -2,38 +2,46 @@
 <html lang="en">
 
 <head>
-	<title>GPA Calculator</title>
+	<title>Home</title>
 
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=0.9">
 	<meta http-equiv="Pragma" content="no-cache">
 
-	<link rel="stylesheet" type="text/css" href="styles.css">
+	<link rel="stylesheet" type="text/css" href="css/global.css">
+	<link rel="stylesheet" type="text/css" href="css/dark.css">
+
 	<link rel="icon" href="img/icon.png" type="image/x-icon">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
-	<div class="section" style="width: max(50%, 400px)">
+	<center>
 		<h1>KISJ HS GPA Calculator</h1>
-		<h2>Quick Calculations</h2>
-		<ul>
-			<p><a href="quickCalc/scs.html">Course Grade</a></p>
-			<!-- <p><a href="quickCalc/1ygpa.html">1 Year, GPA</a></p> -->
-		</ul>
+		<p><i>Thanks for visiting and good luck on your exams!</i></p>
+	</center>
 
+	<div class="home">
+		<div>
+			<h2>Quick Calculations</h2>
+			<p><a href="quickCalc/course_grade.html">Course Grade</a></p>
+			<!-- <p><a href="quickCalc/gpa.html">GPA</a></p> -->
+		</div>
 		<!-- <h2>GPA Tracker</h2> -->
-		<p id="watermark"><i>Copyright © 2026 Siwool Um</i></p>
 
-		<h2>Notes</h2>
-		<h3>v1.0.7b</h3>
-		<ul>
-			<p>Auto update implemented</p>
-			<p>UI update</p>
-			<p>Fixed memory problems</p>
-		</ul>
+		<div>
+			<h2>Patch Notes</h2>
+			<h3>v1.0.8b</h3>
+			<ul>
+				<p>Mobile UI support</p>
+				<p>Collapsable sidebar</p>
+				<p>UI transitions</p>
+				<p>Homepage revamp</p>
+			</ul>
+		</div>
 	</div>
+	<p id="watermark"><i>Copyright © 2026 Siwool Um</i></p>
 
 	<button id="darkmode" onclick="toggleDarkMode()">
 		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -49,6 +57,21 @@
 	</button>
 </body>
 
-<script src="script.js"></script>
+<script src="js/global.js"></script>
+
+<style>
+	.home {
+		display: flex;
+		justify-content: space-evenly;
+		align-items: first baseline;
+		margin: 3em 0;
+	}
+
+	@media (max-width: 768px) {
+		.home {
+			flex-direction: column;
+		}
+	}
+</style>
 
 </html>

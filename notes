@@ -1,36 +1,3 @@
 TODO: 
-- adjust flexbox to inline block in small screens
-- collapsable sidebar
-- verify version system working
-
-
-
-garbage:
-function tableOperations(id) {
-	const table = document.getElementById(id);
-
-	table.addEventListener("mouseover", (e) => {
-		const input = e.target.closest("input");
-		if (!input || input.nextElementSibling?.classList.contains("hover-child")) return;
-
-		const child = document.createElement("button");
-		child.className = "hover-child";
-		child.textContent = "test";
-
-		// remove itself after click or on mouseleave
-		child.addEventListener("click", () => child.remove());
-		child.addEventListener("mouseleave", (ev) => {
-			if (!ev.relatedTarget?.closest("input[data-hovered]")) child.remove();
-		});
-
-		input.insertAdjacentElement("afterend", child);
-	});
-
-	table.addEventListener("mouseout", (e) => {
-		const input = e.target.closest("input");
-		if (!input) return;
-		const child = input.nextElementSibling;
-		if (child?.contains(e.relatedTarget)) return;
-		else if (child?.classList.contains("hover-child")) child.remove();
-	});
-}
+- Add 1 year GPA calculator
+- Add finals calculator
