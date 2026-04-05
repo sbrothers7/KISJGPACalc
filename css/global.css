@@ -1,8 +1,42 @@
+:root {
+    --bg: white;
+    --text: rgb(30, 30, 30);
+    --btn-bg: #e3e3e3;
+    --btn-text: inherit;
+    --btn-hover-bg: #303030;
+    --btn-hover-text: white;
+    --border: rgb(30, 30, 30);
+    --input-bg: transparent;
+    --link: rgb(225, 26, 26);
+    --link-hover: rgb(40, 85, 223);
+    --private-bg: #e1e1e1;
+    --private-text: transparent;
+    --private-hover-text: black;
+    --disabled-bg: lightgrey;
+    --disabled-text: #555;
+}
+
+.dark {
+    --bg: rgb(30, 30, 30);
+    --text: white;
+    --btn-bg: #2c2c2c;
+    --btn-text: white;
+    --btn-hover-bg: #e3e3e3;
+    --btn-hover-text: black;
+    --border: white;
+    --input-bg: rgb(30, 30, 30);
+    --private-bg: #303030;
+    --private-text: transparent;
+    --private-hover-text: white;
+}
+
 body {
     padding: 20px 40px;
     font-family: 'Inter', sans-serif;
     font-weight: 400;
-    transition: 0.3s;
+    color: var(--text);
+    background-color: var(--bg);
+    transition: background-color 0.3s, color 0.3s;
 }
 
 h1,
@@ -27,42 +61,39 @@ summary {
 }
 
 a {
-    transition: 0.3s;
+    color: var(--link);
+    transition: color 0.3s;
 }
 
 a:hover,
 a:active {
-    color: rgb(40, 85, 223);
-}
-
-a {
-    color: rgb(225, 26, 26);
+    color: var(--link-hover);
 }
 
 button {
-    background-color: #e3e3e3;
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
     border-radius: 4px;
     border-width: 1px;
+    border-color: var(--border);
     margin: 10px 0;
     padding: 5px 12px;
-    transition: 0.3s;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
 }
 
 button:hover {
-    background-color: #303030;
-    color: white;
-    scale: 1.02;
+    background-color: var(--btn-hover-bg);
+    color: var(--btn-hover-text);
+    transform: scale(1.02);
 }
 
-
 button:active {
-    scale: 1.1;
+    transform: scale(1.1);
 }
 
 table {
     border-collapse: collapse;
     margin: 20px 0;
-    transition: 0.3s;
     width: 100%;
 }
 
@@ -75,23 +106,23 @@ caption {
 
 th {
     padding: 5px 10px;
-    border: 1px solid rgb(30, 30, 30);
-    transition: 0.3s;
+    border: 1px solid var(--border);
+    transition: border-color 0.3s;
 }
 
 td {
-    border: 1px solid rgb(30, 30, 30);
-    transition: 0.3s;
+    border: 1px solid var(--border);
+    transition: border-color 0.3s;
 }
-
-
 
 input {
     border: none;
     border-radius: 0;
     padding: 5px 10px;
-    transition: 0.3s;
+    color: var(--text);
+    background-color: var(--input-bg);
     text-align: center;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 td input {
@@ -110,7 +141,7 @@ input::-webkit-inner-spin-button {
 }
 
 input.addRow {
-    border: 1px solid black;
+    border: 1px solid var(--border);
     width: 1.2em;
     padding: 2px;
 }
@@ -125,11 +156,11 @@ input.addRow {
 }
 
 #darkmode:hover {
-    scale: 1.1;
+    transform: scale(1.1);
 }
 
 #darkmode:active {
-    scale: 1.2;
+    transform: scale(1.2);
 }
 
 #watermark {
@@ -167,8 +198,8 @@ input.addRow {
 }
 
 *:disabled {
-    background-color: lightgrey;
-    color: #555;
+    background-color: var(--disabled-bg);
+    color: var(--disabled-text);
 }
 
 .header {
@@ -184,17 +215,22 @@ input.addRow {
 }
 
 .private {
-    color: transparent;
-    background-color: #e1e1e1;
+    color: var(--private-text) !important;
+    background-color: var(--private-bg) !important;
 }
 
 .private:hover {
-    color: black;
-    background-color: transparent;
+    color: var(--private-hover-text) !important;
+    background-color: transparent !important;
 }
 
 .inlineflex {
     display: inline-flex;
     gap: 0.5em;
     align-items: center;
+}
+
+.no-transition,
+.no-transition * {
+    transition: none !important;
 }

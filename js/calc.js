@@ -51,6 +51,11 @@ function addRow(id, autoupdate = false) {
 	fInput.autocomplete = "off";
 	sInput.autocomplete = "off";
 
+	if (document.getElementById("privacy").checked) {
+		fInput.classList.add("private");
+		sInput.classList.add("private");
+	}
+
 	if (autoupdate) makeNavTable(id);
 }
 
@@ -67,6 +72,7 @@ function setupSemester(tableId, semester) {
 }
 
 function calcColAvg(id) {
+	const result = document.getElementById(id);
 	const values = document.getElementsByClassName(id);
 	let total = 0;
 	let count = 0;
@@ -77,8 +83,8 @@ function calcColAvg(id) {
 		total += parseFloat(values[i].value);
 	}
 
-	if (count > 0) document.getElementById(id).value = parseFloat((total / count).toFixed(2));
-	else document.getElementById(id).value = '';
+	if (count > 0) result.value = parseFloat((total / count).toFixed(2));
+	else result.value = '';
 }
 
 function calcDomainSem(semester, final = document.getElementById("finalcheck").checked) {
@@ -127,89 +133,87 @@ function convertToPoints(letter) {
 // adapted from vipranarayan14/navigable-table.html
 function makeNavTable(tableId, activeCell = 0) {
 	const table = document.getElementById(tableId);
-
-	if (!table._navInitialized) table._navInitialized = true;
-
-	table.addEventListener('focus', function () {
-		var focusedTable = document.querySelector('#' + table + ':focus');
-		if (focusedTable) focusedTable.style.outline = 'none';
-	});
-
-	// if (focus_NavTable_onLoad) table.focus();
-
-	let cells = table.querySelectorAll('tr td');
 	let active = activeCell;
 
-	makeCellActive();
+	if (!table._navInitialized) {
+		table._navInitialized = true;
 
-	// write 1,2,3... in the 'td's and add clickListener
+		table.addEventListener('focus', function () {
+			const focusedTable = document.querySelector('#' + tableId + ':focus');
+			if (focusedTable) focusedTable.style.outline = 'none';
+		});
+
+		table.addEventListener('click', function (e) {
+			const td = e.target.closest('td');
+			if (!td) return;
+
+			const cells = table.querySelectorAll('tr td');
+			active = Array.prototype.indexOf.call(cells, td);
+			makeCellActive();
+		});
+
+		table.addEventListener('keydown', function (e) {
+			if (
+				e.key == "ArrowDown" ||
+				e.key == "ArrowUp" ||
+				e.key == "ArrowLeft" ||
+				e.key == "ArrowRight" ||
+				e.key == "h" ||
+				e.key == "j" ||
+				e.key == "k" ||
+				e.key == "l" ||
+				e.key == "Tab"
+			) {
+				e.preventDefault();
+				calculateActiveCell(e);
+				makeCellActive();
+				return false;
+			}
+		});
+	}
+
+	// initialize any new cells that don't have content yet
+	const cells = table.querySelectorAll('tr td');
 	for (let i = 0; i < cells.length; i++) {
 		if (!cells[i].innerHTML) {
 			cells[i].innerHTML = i;
 		}
-		if (!cells[i]._clickInitialized) {
-			cells[i].addEventListener('click', function (e) {
-				// console.log(e.target.nodeName);
-				if (e.target.nodeName == "INPUT") { // fix clicking on input failing to update active cell
-					active = Array.prototype.indexOf.call(cells, e.target.parentNode);
-				}
-				else if (e.target.nodeName == "TD") {
-					active = Array.prototype.indexOf.call(cells, e.target);
-				}
-				else return;
-				makeCellActive();
-			});
-		}
 	}
 
-
-	table.addEventListener("keydown", function (e) {
-		if (
-			e.key == "ArrowDown" ||
-			e.key == "ArrowUp" ||
-			e.key == "ArrowLeft" ||
-			e.key == "ArrowRight" ||
-			e.key == "h" ||
-			e.key == "j" ||
-			e.key == "k" ||
-			e.key == "l" ||
-			e.key == "Tab"
-		) {
-			e.preventDefault();
-			calculateActiveCell(e);
-			makeCellActive();
-			return false;
-		}
-	});
+	active = activeCell;
+	makeCellActive();
 
 	function calculateActiveCell(e) {
-		var rows = table.querySelectorAll('tr').length;
-		var columns = table.querySelectorAll('tr')[0].childElementCount;
+		const cells = table.querySelectorAll('tr td'); // fresh query
+		const columns = table.querySelector('tr').childElementCount;
 
-		if (e.key == "ArrowLeft" || e.key == "h") { //move left or wrap
+		if (e.key == "ArrowLeft" || e.key == "h") {
 			active = (active > 0) ? active - 1 : active;
 		}
-		if (e.key == "ArrowUp" || e.key == "k") { // move up
+		if (e.key == "ArrowUp" || e.key == "k") {
 			active = (active - columns >= 0) ? active - columns : active;
 		}
-		if (e.key == "ArrowRight" || e.key == "l") { // move right or wrap
+		if (e.key == "ArrowRight" || e.key == "l") {
 			active = (active < cells.length - 1) ? active + 1 : active;
 		}
-		if (e.key == "ArrowDown" || e.key == "j") { // move down
+		if (e.key == "ArrowDown" || e.key == "j") {
 			active = (active + columns <= cells.length - 1) ? active + columns : active;
 		}
-		if (e.key == "Tab") { // tab to move fixed
+		if (e.key == "Tab") {
 			if (e.shiftKey) active = Math.max(0, --active);
 			else active = Math.min(cells.length - 1, ++active);
 		}
-
 	}
 
 	function makeCellActive() {
-		var activeTDs = table.querySelectorAll('.active');
-		for (var i = 0; i < activeTDs.length; i++) {
+		const cells = table.querySelectorAll('tr td'); // fresh query
+		const activeTDs = table.querySelectorAll('.active');
+		for (let i = 0; i < activeTDs.length; i++) {
 			activeTDs[i].classList.remove('active');
 		}
+
+		if (active >= cells.length) active = cells.length - 1;
+		if (active < 0) active = 0;
 
 		cells[active].classList.add('active');
 		cells[active].children[0].select();
@@ -218,7 +222,7 @@ function makeNavTable(tableId, activeCell = 0) {
 }
 
 function togglePrivacy() {
-	const targets = Array.from(document.querySelectorAll("input")).concat(Array.from(document.querySelectorAll(".result")));
+	const targets = document.querySelectorAll("td input, .result");
 	for (let i = 0; i < targets.length; i++) targets[i].classList.toggle("private");
 }
 

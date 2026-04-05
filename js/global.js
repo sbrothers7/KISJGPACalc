@@ -8,18 +8,23 @@ window.onload = () => {
     else darkmodeState = 2; // follow system
     toggleDarkMode();
     checkVersion();
+
+    document.documentElement.classList.add("no-transition");
+    requestAnimationFrame(() => {
+        document.documentElement.classList.remove("no-transition");
+    }); // disable transitions initially, re-enable afterwards
 }
 
-window.addEventListener('unload', function () {
-    window.addEventListener('unload', function () {
-        // remove heavy listeners
+window.addEventListener('pagehide', function (e) {
+    if (!e.persisted) {
+        // discard page
         document.querySelectorAll('table').forEach(t => {
             const clone = t.cloneNode(false);
             t.parentNode.replaceChild(clone, t);
         });
         document.documentElement.innerHTML = '';
-    });
-}); // fix memory increase after reload
+    }
+}); // idk why but it seems to lower RAM usage
 
 // cookie stuff
 function setCookie(cname, cvalue, exdays) {
@@ -76,15 +81,18 @@ async function checkVersion() {
     try {
         const res = await fetch("/KISJGPACalc/version.json?t=" + Date.now());
         const { version } = await res.json();
+        console.log(`Latest version: ${version}`);
 
         const stored = sessionStorage.getItem("appVersion");
 
         if (!stored) {
+            console.log("Could not find stored version. Setting to latest.");
             sessionStorage.setItem("appVersion", version);
             return;
         }
 
         if (version !== stored) {
+            console.log(`Stored: ${version}`);
             sessionStorage.setItem("appVersion", version);
             window.location.reload(true);
         }

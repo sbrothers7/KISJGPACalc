@@ -1,21 +1,25 @@
-/* sidebar stuff */
+:root {
+    --sidebar-width: max(14vw, 160px);
+    --sidebar-padding: 2em;
+}
 
 .sidebar {
     height: calc(100vh - 1em);
-    width: max(14vw, 160px);
+    width: var(--sidebar-width);
     position: fixed;
     z-index: 1;
     top: 0;
     left: 0;
-    background-color: #eee;
+    background-color: var(--sidebar-bg, #eee);
     overflow-x: hidden;
-    /* Disable horizontal scroll */
-    padding: 0.5em 2em;
+    padding: 0.5em var(--sidebar-padding);
 
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
 
-    transition: 0.28s cubic-bezier(.4, 0, .2, 1);
+    transition: width 0.28s cubic-bezier(.4, 0, .2, 1),
+        padding 0.28s cubic-bezier(.4, 0, .2, 1),
+        background-color 0.3s;
 
     display: flex;
     flex-direction: column;
@@ -43,8 +47,7 @@
 
 .sidebar-anchor {
     position: fixed;
-    left: calc(max(14vw + 4em, 160px + 4em));
-    /* sidebar width + sidebar padding */
+    left: calc(var(--sidebar-width) + var(--sidebar-padding) * 2);
     top: 50vh;
     transform: translateY(-50%);
     z-index: 2;
@@ -56,7 +59,7 @@
 }
 
 .toggle-btn {
-    background-color: #eee;
+    background-color: var(--sidebar-bg, #eee);
     border-color: transparent !important;
     border-left: none;
     border-radius: 0 4px 4px 0;
@@ -64,7 +67,7 @@
 }
 
 .main {
-    margin-left: max(calc(14vw + 2em), 160px + 2em);
+    margin-left: calc(var(--sidebar-width) + var(--sidebar-padding));
     padding: 0 2em 0 2em;
     transition: margin-left 0.28s cubic-bezier(.4, 0, .2, 1);
 }
@@ -81,7 +84,7 @@
     .sidebar {
         margin: 0;
         width: calc(100vw - 6em);
-        height: calc(100vh);
+        height: 100vh;
     }
 
     .sidebar-anchor {
@@ -91,4 +94,12 @@
     #watermark {
         top: calc(100vh - 4em);
     }
+}
+
+.dark .sidebar {
+    background-color: #2c2c2c;
+}
+
+.dark .toggle-btn {
+    background-color: #2c2c2c;
 }
