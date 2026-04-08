@@ -1,10 +1,15 @@
 // mobile UI
 if (isMobile()) {
 	toggleSidebar();
+	document.addEventListener("click", (e) => {
+		if (e.target == document.documentElement) {
+			toggleSidebar();
+		}
+	});
 }
 
-// resized to mobile UI
-window.addEventListener('resize', () => {
+// resized UI
+window.addEventListener("resize", () => {
 	const collapsed = document.querySelector(".sidebar").classList.contains("collapsed");
 	if (isMobile()) {
 		if (!collapsed) {
@@ -18,152 +23,314 @@ window.addEventListener('resize', () => {
 	}
 });
 
-function addRows(id, nInput) { // id of target table, id of input field
-	const temp = document.getElementById(nInput);
-	if (temp.value > 10) temp.value = 10; // limit max rows to 10 at a time
-	for (let i = 0; i < temp.value; i++) {
-		addRow(id, false);
+document.getElementById("privacy").addEventListener("change", () => {
+	const targets = document.querySelectorAll("td");
+	for (let i = 0; i < targets.length; i++) targets[i].classList.toggle("private");
+});
+
+function setupSubjects() {
+	const datalist = document.getElementById("subjects");
+	const subjects = [
+		"Advanced Design and Technology",
+		"Advanced Engineering",
+		"Advanced Robotics",
+		"Advanced String Orchestra",
+		"Advanced Theater",
+		"Algebra II",
+		"AP Art",
+		"AP Biology",
+		"AP Calculus AB",
+		"AP Calculus BC",
+		"AP Chemistry",
+		"AP Chinese Language and Culture",
+		"AP Comparative Government and Politics",
+		"AP Computer Science A",
+		"AP Computer Science Principles",
+		"AP Economics",
+		"AP English Language and Composition",
+		"AP English Literature and Composition",
+		"AP Environmental Science",
+		"AP Human Geography",
+		"AP Music Theory",
+		"AP Physics 1",
+		"AP Physics C",
+		"AP Psychology",
+		"AP Research",
+		"AP Seminar",
+		"AP Spanish",
+		"AP Statistics",
+		"AP United States Government and Politics",
+		"AP US History",
+		"AP World History: Modern",
+		"Biology",
+		"Calculus",
+		"Chamber Choir",
+		"Chemistry",
+		"Chinese",
+		"Choir",
+		"Concert Band",
+		"Creative Writing",
+		"Debate",
+		"Design and Technology",
+		"Digital Photography",
+		"Earth Science",
+		"Economics",
+		"Engineering",
+		"English",
+		"Ethics",
+		"Film as Literature",
+		"Geometry",
+		"Global Studies",
+		"Graphic Design",
+		"Health and Physical Education",
+		"Heritage Chinese",
+		"Individual/Dual Activity",
+		"Journalism",
+		"Korean Language",
+		"Korean Social Studies",
+		"Linear Algebra",
+		"Modern Band",
+		"Movement & Expression",
+		"Multivariable Calculus",
+		"Personal Fitness",
+		"Physics",
+		"Pre-Calculus",
+		"Programming I",
+		"Programming II",
+		"Psychology",
+		"Public Speaking",
+		"Recreational & Lifetime Sports",
+		"Robotics",
+		"Sociology",
+		"Solo Vocal Technique",
+		"Spanish",
+		"String Orchestra",
+		"Theater I",
+		"Theater II",
+		"US History",
+		"Videography",
+		"Visual Art I",
+		"Visual Art II - 2D",
+		"Visual Art II - 3D",
+		"Wellness",
+		"Wind Ensemble",
+		"Writing 9",
+		"Yearbook",
+	];
+
+	for (let subject of subjects) {
+		const option = document.createElement("option");
+		option.value = subject;
+		datalist.appendChild(option);
 	}
-	makeNavTable(id);
+
+	const targets = document.querySelectorAll("table.data");
+	for (let target of targets) {
+		target.addEventListener("focusin", (e) => {
+			if (e.target.tagName == "INPUT" && e.target.classList.contains(`${target.id}_0`)) {
+				e.target.setAttribute("list", "subjects");
+			}
+		});
+
+		target.addEventListener("focusout", (e) => {
+			if (e.target.tagName == "INPUT") {
+				e.target.removeAttribute("list");
+			}
+		});
+	}
+}
+
+function addRows(tableId, nInput, col = 2, types = []) { // id of target table, id of input field
+	const temp = document.getElementById(nInput);
+	if (getTableData(document.getElementById(tableId)).length > 49) { // max rows = 50
+		temp.value = 1;
+		return;
+	}
+
+	if (temp.value > 10) temp.value = 10; // limit max added rows to 10 at a time
+	for (let i = 0; i < temp.value; i++) {
+		addRow(tableId, col, types);
+	}
+	makeNavTable(tableId);
 	temp.value = 1;
 }
 
-function addRow(id, autoupdate = false) {
-	const table = document.getElementById(id);
+function addRow(tableId, col = 2, types = [], autoupdate = false) {
+	const table = document.getElementById(tableId);
 	const row = document.createElement("tr");
 	table.append(row);
 
-	const formative = document.createElement("td");
-	const summative = document.createElement("td");
-	row.append(formative);
-	row.append(summative);
+	for (let i = 0; i < col; i++) {
+		const subject = types[i] == "subject";
+		const cell = document.createElement("td");
+		row.append(cell);
 
-	const fInput = document.createElement("input");
-	const sInput = document.createElement("input")
+		const input = document.createElement("input");
+		if (subject) {
+			input.type = "text";
+			input.list = "subjects";
+		}
+		else {
+			if (!subject && types.length != 0) input.type = types[i];
+			else input.type = "number";
+		}
 
-	formative.appendChild(fInput);
-	summative.appendChild(sInput);
+		cell.appendChild(input);
 
-	fInput.classList.add(id + "f");
-	sInput.classList.add(id + "s");
-	fInput.type = "number";
-	sInput.type = "number";
-	fInput.autocomplete = "off";
-	sInput.autocomplete = "off";
+		input.classList.add(tableId + `_${i}`);
+		if (document.getElementById("privacy").checked) cell.classList.add("private");
 
-	if (document.getElementById("privacy").checked) {
-		fInput.classList.add("private");
-		sInput.classList.add("private");
+		input.autocomplete = "off";
+	}
+	if (autoupdate) makeNavTable(tableId);
+}
+
+function getTableData(table, header = true, weighted = false) {
+	let data = []
+	const rows = table.querySelectorAll("tr");
+	for (let i = 0; i < rows.length; i++) {
+		if (header && i == 0) continue;
+		cells = rows[i].querySelectorAll("td");
+		temp = []
+		for (let j = 0; j < cells.length; j++) {
+			temp.push(cells[j].firstElementChild);
+		}
+		data.push(temp);
+	}
+	return data;
+}
+
+function getCol(table, column, weighted = false) {
+	const data = getTableData(table);
+	let values = []
+	let apCourses = []
+
+	for (let i = 0; i < data.length; i++) {
+		if (data[i][column].value == "") continue;
+
+		if (data[i][0].value.includes("AP ")) apCourses.push(true);
+		else apCourses.push(false);
+
+		values.push(data[i][column].value);
 	}
 
-	if (autoupdate) makeNavTable(id);
+	if (weighted) return [values, apCourses];
+	return [values];
 }
 
-function setupSemester(tableId, semester) {
-	const table = document.getElementById(tableId);
-
-	table.addEventListener("change", (e) => {
-		const target = e.target;
-		if (target.classList.contains(`${tableId}f`)) calcColAvg(`${tableId}f`);
-		else if (target.classList.contains(`${tableId}s`)) calcColAvg(`${tableId}s`);
-
-		calcDomainSem(semester);
-	});
+function getCell(table, x, y) {
+	const data = getTableData(table);
+	return data[y][x];
 }
 
-function calcColAvg(id) {
-	const result = document.getElementById(id);
-	const values = document.getElementsByClassName(id);
+function avg(list, parsetype = 0, weighted = false, sf = 2) {
 	let total = 0;
-	let count = 0;
+	for (let i = 0; i < list[0].length; i++) {
+		let item = list[0][i];
+		if (parsetype == 1) item = parseFloat(item);
+		else if (parsetype == 2) {
+			if (!isNaN(item)) item = letterToPoint(percentToLetter(item));
+			else item = letterToPoint(item);
 
-	for (let i = 0; i < values.length; i++) {
-		if (values[i].value == '') continue;
-		count++;
-		total += parseFloat(values[i].value);
+			if (weighted && list[1][i]) item += 1; // if AP, weight
+		}
+		total += item;
 	}
-
-	if (count > 0) result.value = parseFloat((total / count).toFixed(2));
-	else result.value = '';
+	const res = parseFloat((total / list[0].length).toFixed(sf));
+	if (Number.isNaN(res)) return "";
+	return res;
 }
 
-function calcDomainSem(semester, final = document.getElementById("finalcheck").checked) {
-	const favg = parseFloat(document.getElementById(`s${semester}f`).value);
-	const savg = parseFloat(document.getElementById(`s${semester}s`).value);
+function calcDomainSem(semester, final) {
+	const favg = parseFloat(document.getElementById(`s${semester}_favg`).innerHTML);
+	const savg = parseFloat(document.getElementById(`s${semester}_savg`).innerHTML);
 	const target = document.getElementById(`s${semester}domain`);
+
+	if (Number.isNaN(favg) && Number.isNaN(savg)) {
+		target.innerHTML = "";
+		return;
+	}
 
 	let res;
 
 	if (final) {
-		// console.log("Core/AP Course");
 		let finalGrade = parseFloat(document.getElementById(`s${semester}final`).value);
 		if (Number.isNaN(finalGrade)) res = parseFloat(((favg * 20 + savg * 60) / 80).toFixed(1));
 		else res = parseFloat(((favg * 20 + savg * 60 + finalGrade * 20) / 100).toFixed(1));
-		// console.log(res);
-		if (!Number.isNaN(res)) target.innerText = `${res} (${convertToLetter(res)})`;
-		else target.innerText = "";
 	}
 	else {
-		// console.log("Elective Course");
 		res = parseFloat(((favg * 20 + savg * 80) / 100).toFixed(1));
-		if (!Number.isNaN(res)) target.innerText = `${res} (${convertToLetter(res)})`;
-		else target.innerText = "";
 	}
+	if (Number.isNaN(res)) res = !Number.isNaN(favg) ? favg : !Number.isNaN(savg) ? savg : "";
+	target.innerText = `${res} (${percentToLetter(res)})`;
 }
 
 // conversions
-const pBoundaries = [98, 93, 90, 87, 83, 80, 77, 73, 70, 67, 63, 60, 50];
-const letterGrade = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F"];
-const point = [4, 4, 3.67, 3.33, 3, 2.67, 2.33, 2, 1.67, 1.33, 1, 0.67, 0.33, 0];
+const pBoundaries = [98, 93, 90, 87, 83, 80, 77, 73, 70, 67, 63, 60, 50, 0];
+const letterGrade = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F", "NG"];
+const point = [4, 4, 3.67, 3.33, 3, 2.67, 2.33, 2, 1.67, 1.33, 1, 0.67, 0, 0];
 
-function convertToLetter(percentage) {
-	for (let i = 0; i < 13; i++) {
+function percentToLetter(percentage) {
+	for (let i = 0; i < pBoundaries.length; i++) {
 		if (Math.round(percentage) >= pBoundaries[i]) return letterGrade[i];
 	}
-	return "NG";
+	return NaN;
 }
 
-function convertToPoints(letter) {
+function letterToPoint(letter) {
 	for (let i = 0; i < letterGrade.length; i++) {
 		if (letterGrade[i] == letter) return point[i];
 	}
-	return 0;
+	return NaN;
 }
 
 // adapted from vipranarayan14/navigable-table.html
-function makeNavTable(tableId, activeCell = 0) {
+function makeNavTable(tableId, activeCell = -1) {
 	const table = document.getElementById(tableId);
 	let active = activeCell;
 
 	if (!table._navInitialized) {
 		table._navInitialized = true;
 
-		table.addEventListener('focus', function () {
-			const focusedTable = document.querySelector('#' + tableId + ':focus');
-			if (focusedTable) focusedTable.style.outline = 'none';
+		table.addEventListener("focus", function () {
+			const focusedTable = document.querySelector("#" + tableId + ":focus");
+			if (focusedTable) focusedTable.style.outline = "none";
 		});
 
-		table.addEventListener('click', function (e) {
-			const td = e.target.closest('td');
+		table.addEventListener("click", function (e) {
+			const td = e.target.closest("td");
 			if (!td) return;
 
-			const cells = table.querySelectorAll('tr td');
+			const cells = table.querySelectorAll("tr td");
 			active = Array.prototype.indexOf.call(cells, td);
 			makeCellActive();
 		});
 
-		table.addEventListener('keydown', function (e) {
-			if (
-				e.key == "ArrowDown" ||
-				e.key == "ArrowUp" ||
-				e.key == "ArrowLeft" ||
-				e.key == "ArrowRight" ||
-				e.key == "h" ||
-				e.key == "j" ||
-				e.key == "k" ||
-				e.key == "l" ||
-				e.key == "Tab"
-			) {
+		table.addEventListener("keydown", function (e) {
+			let vimkeys;
+			let trigger = false;
+			switch (e.key) {
+				case "ArrowDown":
+				case "ArrowUp":
+				case "ArrowLeft":
+				case "ArrowRight":
+				case "Tab":
+					vimkeys = false;
+					trigger = true;
+					break
+				case "h":
+				case "j":
+				case "k":
+				case "l":
+					vimkeys = true;
+					trigger = true;
+					break;
+			}
+			if (trigger) {
+				// if current cell is used for selecting subjects, don't move with vimkeys
+				const currentActive = table.querySelector(".active");
+				if (vimkeys && currentActive.firstElementChild.getAttribute("list") == "subjects" && currentActive.firstChild.classList.contains(`${table.id}_0`)) return;
+
 				e.preventDefault();
 				calculateActiveCell(e);
 				makeCellActive();
@@ -181,6 +348,7 @@ function makeNavTable(tableId, activeCell = 0) {
 	}
 
 	active = activeCell;
+	if (active < 0) return;
 	makeCellActive();
 
 	function calculateActiveCell(e) {
@@ -221,23 +389,21 @@ function makeNavTable(tableId, activeCell = 0) {
 	}
 }
 
-function togglePrivacy() {
-	const targets = document.querySelectorAll("td input, .result");
-	for (let i = 0; i < targets.length; i++) targets[i].classList.toggle("private");
+function clearTable(table) {
+	const data = getTableData(table);
+	for (let i of data) {
+		for (let j of i) {
+			j.value = "";
+		}
+	}
 }
 
 function clearSem(semester) {
-	const f = document.querySelectorAll(`input.s${semester}f`);
-	const s = document.querySelectorAll(`input.s${semester}s`);
-	for (let i = 0; i < f.length; i++) {
-		f[i].value = "";
-		s[i].value = "";
-	}
+	const table = document.getElementById(`s${semester}`);
+	clearTable(table);
 
-	document.getElementById(`s${semester}f`).value = "";
-	document.getElementById(`s${semester}s`).value = "";
-	document.getElementById(`s${semester}domain`).innerHTML = "";
-
+	for (let e of document.querySelectorAll(".result-td > input")) e.value = "";
+	for (let e of document.querySelectorAll(".result-td")) e.innerHTML = "";
 }
 
 function toggleSidebar() {

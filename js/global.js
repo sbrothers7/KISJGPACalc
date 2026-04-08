@@ -7,7 +7,6 @@ window.onload = () => {
     else if (savedState == "false") darkmodeState = 0;
     else darkmodeState = 2; // follow system
     toggleDarkMode();
-    checkVersion();
 
     document.documentElement.classList.add("no-transition");
     requestAnimationFrame(() => {
@@ -24,26 +23,7 @@ window.addEventListener('pagehide', function (e) {
         });
         document.documentElement.innerHTML = '';
     }
-}); // idk why but it seems to lower RAM usage
-
-// cookie stuff
-function setCookie(cname, cvalue, exdays) {
-    const d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
-
-function getCookie(cookieName) {
-    const cookies = document.cookie.split('; ');
-    for (const cookie of cookies) {
-        const [name, value] = cookie.split('=');
-        if (name === cookieName) {
-            return decodeURIComponent(value);
-        }
-    }
-    return null;
-}
+}); // seems to lower RAM usage
 
 function toggleDarkMode() {
     const target = document.documentElement;
@@ -77,24 +57,45 @@ function toggleDarkMode() {
     darkmodeState++;
 }
 
-async function checkVersion() {
-    try {
-        const res = await fetch("/KISJGPACalc/version.json?t=" + Date.now());
-        const { version } = await res.json();
-        console.log(`Latest version: ${version}`);
+// async function checkVersion() {
+//     try {
+//         const res = await fetch("/KISJGPACalc/version.json?t=" + Date.now());
+//         const { version } = await res.json();
+//         console.log(`Latest version: ${version}`);
 
-        const stored = sessionStorage.getItem("appVersion");
+//         const stored = sessionStorage.getItem("appVersion");
 
-        if (!stored) {
-            console.log("Could not find stored version. Setting to latest.");
-            sessionStorage.setItem("appVersion", version);
-            return;
-        }
+//         if (!stored) {
+//             console.log("Could not find stored version. Setting to latest.");
+//             sessionStorage.setItem("appVersion", version);
+//             return;
+//         }
 
-        if (version !== stored) {
-            console.log(`Stored: ${version}`);
-            sessionStorage.setItem("appVersion", version);
-            window.location.reload(true);
-        }
-    } catch (e) { }
+//         if (version !== stored) {
+//             console.log(`Stored: ${version}`);
+//             sessionStorage.setItem("appVersion", version);
+//             window.location.reload(true);
+//         }
+//     } catch (e) { }
+// }
+
+/*
+// cookie stuff
+function setCookie(cname, cvalue, exdays) {
+    const d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    let expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
+
+function getCookie(cookieName) {
+    const cookies = document.cookie.split('; ');
+    for (const cookie of cookies) {
+        const [name, value] = cookie.split('=');
+        if (name === cookieName) {
+            return decodeURIComponent(value);
+        }
+    }
+    return null;
+}
+*/

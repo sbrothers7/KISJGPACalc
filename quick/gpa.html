@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>GPA</title>
+	<base href="https://sbrothers7.github.io/KISJGPACalc/">
+	<script src="js/head-common.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/sidebar.css">
+</head>
+
+<body>
+	<div class="sidebar">
+		<div>
+			<h2><a href="index.html" class="nav-title">Home</a></h2>
+			<h3>GPA Calculation</h3>
+			<p class="desc">Percentages and letter grades are both supported!</p>
+		</div>
+
+		<div class="config">
+			<p class="title">Configuration</p>
+			<input type="checkbox" id="privacy">
+			<label for="privacy">Privacy Mode</label>
+		</div>
+
+		<div class="inlineflex">
+			<p>Add</p>
+			<input id="addValue" class="addRow" type="number" maxlength="2" value="1" min="1" max="10">
+			<p>Row(s)</p>
+			<button style="padding: 0.3em 0.4em;"
+				onclick="addRows('s1', 'addValue'); addRows('s2', 'addValue')">↵</button>
+		</div>
+		<p id="watermark"><i>Copyright © 2026 Siwool Um</i></p>
+	</div>
+	<sidebar-anchor></sidebar-anchor>
+
+	<div class="main">
+		<div class="container">
+			<div class="section">
+				<table id="s1" class="data">
+					<caption>Semester 1</caption>
+					<tr>
+						<th>Subject</th>
+						<th>Grade</th>
+					</tr>
+				</table>
+
+				<table id="s1_results" class="result">
+					<caption></caption>
+					<tr>
+						<th>Unweighted</th>
+						<th>Weighted</th>
+					</tr>
+					<tr>
+						<td id="s1_gpa_uw" class="result-td"></td>
+						<td id="s1_gpa_w" class="result-td"></td>
+					</tr>
+				</table>
+
+				<div class="header">
+					<button class="clearbtn" onclick="clearSem(1)">Clear All</button>
+				</div>
+			</div>
+
+			<div class="section">
+				<table id="s2" class="data">
+					<caption>Semester 2</caption>
+					<tr>
+						<th>Subject</th>
+						<th>Grade</th>
+					</tr>
+				</table>
+
+				<table id="s2_results" class="result">
+					<caption></caption>
+					<tr>
+						<th>Unweighted</th>
+						<th>Weighted</th>
+					</tr>
+					<tr>
+						<td id="s2_gpa_uw" class="result-td"></td>
+						<td id="s2_gpa_w" class="result-td"></td>
+					</tr>
+				</table>
+
+				<div class="header">
+					<button class="clearbtn" onclick="clearSem(2)">Clear All</button>
+				</div>
+			</div>
+		</div>
+		<div class="section center">
+			<table id="results" class="single-table result">
+				<caption>Final GPA</caption>
+				<tr>
+					<th>Unweighted</th>
+					<th>Weighted</th>
+				</tr>
+				<tr>
+					<td id="gpa_uw" class="result-td"></td>
+					<td id="gpa_w" class="result-td"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<dm-button></dm-button>
+	<datalist id="subjects"></datalist>
+
+</body>
+
+<script src="js/components.js"></script>
+<script src="js/global.js"></script>
+<script src="js/calc.js"></script>
+
+<script>
+	// init
+	setupSubjects();
+	for (let i = 1; i < 3; i++) {
+		for (let j = 0; j < 8; j++) { addRow(`s${i}`, 2, ["subject", "text"]); };
+		makeNavTable(`s${i}`);
+
+		document.getElementById(`s${i}`).addEventListener("change", () => {
+			const table = document.getElementById(`s${i}`);
+			const gpa_uw = document.querySelectorAll("[id$='_gpa_uw']");
+			const gpa_w = document.querySelectorAll("[id$='_gpa_w']");
+
+			gpa_uw[i - 1].innerHTML = avg(getCol(table, 1), 2, false, 4);
+			gpa_w[i - 1].innerHTML = avg(getCol(table, 1, true), 2, true, 4);
+
+			let data_uw = [];
+			let data_w = [];
+			for (let j = 0; j < 2; j++) {
+				data_uw.push(gpa_uw[j].innerHTML);
+				data_w.push(gpa_w[j].innerHTML)
+			}
+
+			document.getElementById("gpa_uw").innerHTML = avg([data_uw], 1, false, 4);
+			document.getElementById("gpa_w").innerHTML = avg([data_w], 1, false, 4);
+		});
+	}
+
+	document.getElementById("addValue").addEventListener("keydown", (e) => {
+		if (e.key == "Enter") {
+			addRows("s1", "addValue");
+			addRows("s2", "addValue");
+		}
+	});
+</script>
+
+</html>

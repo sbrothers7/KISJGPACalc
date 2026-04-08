@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Course Grade</title>
+	<base href="https://sbrothers7.github.io/KISJGPACalc/">
+	<script src="js/head-common.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/sidebar.css">
+</head>
+
+<body>
+	<div class="sidebar">
+		<div>
+			<h2><a href="index.html" class="nav-title">Home</a></h2>
+			<h3>Single Course Calculations</h3>
+			<p class="desc">Enter percentages only.</p>
+		</div>
+
+		<div class="config">
+			<p class="title">Configuration</p>
+			<input type="checkbox" id="finalcheck">
+			<label for="finalcheck">Finals</label>
+			<br>
+			<input type="checkbox" id="apcheck">
+			<label for="apcheck">AP</label>
+			<br>
+			<input type="checkbox" id="yearcheck">
+			<label for="yearcheck">Full Year</label>
+			<br>
+			<input type="checkbox" id="privacy">
+			<label for="privacy">Privacy Mode</label>
+		</div>
+
+		<div class="inlineflex">
+			<p>Add</p>
+			<input id="addValue" class="addRow" type="number" maxlength="2" value="1" min="1" max="10">
+			<p>Row(s)</p>
+			<button class="add-btn" onclick="addRows('s1', 'addValue'); addRows('s2', 'addValue')">↵</button>
+		</div>
+		<p id="watermark"><i>Copyright © 2026 Siwool Um</i></p>
+	</div>
+	<sidebar-anchor></sidebar-anchor>
+
+	<div class="main">
+		<div class="container">
+			<div class="section">
+				<table id="s1" class="data">
+					<caption>Semester 1</caption>
+					<tr>
+						<th>Formative</th>
+						<th>Summative</th>
+					</tr>
+				</table>
+
+				<table class="result">
+					<caption></caption>
+					<tr>
+						<th>Averages</th>
+						<th></th>
+					</tr>
+					<tr>
+						<td id="s1_favg" class="result-td"></td>
+						<td id="s1_savg" class="result-td"></td>
+					</tr>
+				</table>
+
+				<div class="header">
+					<table class="result-table result">
+						<caption></caption>
+						<tr>
+							<th>Domain</th>
+						</tr>
+						<tr>
+							<td id="s1domain" class="result-td"></td>
+						</tr>
+					</table>
+					<button class="clearbtn" onclick="clearSem(1)">Clear All</button>
+				</div>
+			</div>
+
+			<div id="s2container" class="hidden section">
+				<table id="s2" class="data">
+					<caption>Semester 2</caption>
+					<tr>
+						<th>Formative</th>
+						<th>Summative</th>
+					</tr>
+				</table>
+
+				<table class="result">
+					<caption></caption>
+					<tr>
+						<th>Averages</th>
+						<th></th>
+					</tr>
+					<tr>
+						<td><input id="s2_favg" readonly></td>
+						<td><input id="s2_savg" readonly></td>
+					</tr>
+				</table>
+
+				<div class="header">
+					<table class="result-table result">
+						<caption></caption>
+						<tr>
+							<th>Domain</th>
+						</tr>
+						<tr>
+							<td id="s2domain" class="result-td"></td>
+						</tr>
+					</table>
+					<button class="clearbtn" onclick="clearSem(2)">Clear All</button>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="section center">
+			<table id="final" class="single-table hidden data">
+				<caption>Finals</caption>
+				<tr>
+					<th>Final S1</th>
+					<th id="s2finalh" class="hidden">Final S2</th>
+				</tr>
+				<tr>
+					<td><input id="s1final"></td>
+					<td id="s2finalcell" class="hidden"><input id="s2final"></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<dm-button></dm-button>
+</body>
+
+<script src="js/components.js"></script>
+<script src="js/global.js"></script>
+<script src="js/calc.js"></script>
+
+<script>
+	const final = document.getElementById("finalcheck");
+	const ap = document.getElementById("apcheck");
+	const fullyear = document.getElementById("yearcheck");
+	const privacy = document.getElementById("privacy");
+
+	const finalTable = document.getElementById("final");
+	const s2final = document.getElementById("s2final");
+
+	function updateFinalTable() {
+		if (final.checked) finalTable.classList.remove("hidden");
+		else finalTable.classList.add("hidden");
+	}
+
+	// init
+	for (let i = 0; i < 6; i++) { addRow("s1"); addRow("s2") };
+
+	makeNavTable("s1");
+	makeNavTable("s2");
+
+	// EventListeners
+	final.addEventListener("change", updateFinalTable);
+
+	finalTable.addEventListener("change", () => {
+		calcDomainSem(1, final.checked);
+		calcDomainSem(2, final.checked);
+	});
+
+	ap.addEventListener("change", () => {
+		if (ap.checked) {
+			final.checked = true;
+			final.disabled = true;
+			s2final.value = "No finals for S2";
+			s2final.disabled = true;
+		} else {
+			final.disabled = false;
+			s2final.value = "";
+			s2final.disabled = false;
+		}
+		updateFinalTable();
+	});
+
+	fullyear.addEventListener("change", () => {
+		document.getElementById("s2finalh").classList.toggle("hidden");
+		document.getElementById("s2finalcell").classList.toggle("hidden");
+		document.getElementById("s2container").classList.toggle("hidden");
+	});
+
+	document.getElementById("addValue").addEventListener("keydown", (e) => {
+		if (e.key == "Enter") {
+			addRows("s1", "addValue");
+			addRows("s2", "addValue");
+		}
+	});
+
+	for (let i = 1; i < 3; i++) {
+		const table = document.getElementById(`s${i}`);
+
+		table.addEventListener("change", (e) => {
+			const target = e.target;
+			if (target.classList.contains(`s${i}_0`)) {
+				document.getElementById(`s${i}_favg`).innerHTML = avg(getCol(table, 0), true);
+			}
+			else if (target.classList.contains(`s${i}_1`)) {
+				document.getElementById(`s${i}_savg`).innerHTML = avg(getCol(table, 1), true);
+			}
+
+			calcDomainSem(i);
+		});
+	}
+</script>
+
+<style>
+	div,
+	table,
+	td,
+	th {
+		opacity: 1;
+		transition: opacity 0.3s, display 0.3s allow-discrete;
+
+	}
+
+	div.hidden,
+	table.hidden,
+	td.hidden,
+	th.hidden {
+		display: none;
+		opacity: 0;
+	}
+
+	@starting-style {
+
+		div,
+		table,
+		td,
+		th {
+			opacity: 0;
+		}
+	}
+</style>
+
+</html>
