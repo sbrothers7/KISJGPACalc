@@ -500,3 +500,12 @@ summary .version {
         /* border-top: 0.5px solid #333; */
     }
 }
+
+@media (max-width: 768px) {
+
+    table,
+    th,
+    td {
+        border-width: 1px;
+    }
+}

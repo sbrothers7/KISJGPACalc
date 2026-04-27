@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Minimum Score</title>
+    <base href="https://sbrothers7.github.io/KISJGPACalc/">
+    <script src="js/head-common.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/sidebar.css">
+</head>
+
+<body>
+    <div class="sidebar">
+        <div>
+            <h2><a href="index.html" class="nav-title">Home</a></h2>
+            <h3>Minimum Score Calculations</h3>
+            <p class="desc">"What score do I need to get ___?"</p>
+        </div>
+
+        <div class="config">
+            <p class="title">Configuration</p>
+            <input type="checkbox" id="privacy">
+            <label for="privacy">Privacy Mode</label>
+            <br>
+            <input type="checkbox" id="rounding">
+            <label for="roudning">Round Scores</label>
+            <br>
+            <p class="desc"><i>Sets the boundary for an A to 92.5 instead of 93, and so on.</i></p>
+        </div>
+
+        <!-- <div class="inlineflex">
+            <p>Add</p>
+            <input id="addValue" class="addRow" type="number" maxlength="2" value="1" min="1" max="10">
+            <p>Row(s)</p>
+            <button style="padding: 0.3em 0.4em;" onclick="addRows('asmt', 'addValue')">↵</button>
+        </div> -->
+        <p id="watermark"><i>Copyright © 2026 Siwool Um</i></p>
+    </div>
+    <sidebar-anchor></sidebar-anchor>
+
+    <div class="main">
+        <div class="container">
+            <div class="section">
+                <table id="finals" class="data">
+                    <caption>Final Exam</caption>
+                    <tr>
+                        <th>Current Grade</th>
+                        <th>Desired Grade</th>
+                    </tr>
+                </table>
+
+                <table class="result-table result">
+                    <tr>
+                        <th>Result</th>
+                    </tr>
+                    <tr>
+                        <td id="finals-result" class="result-td"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <dm-button></dm-button>
+    <datalist id="subjects"></datalist>
+
+</body>
+
+<script src="js/components.js"></script>
+<script src="js/global.js"></script>
+<script src="js/calc.js"></script>
+
+<script>
+    // init
+    addRow("finals", 2, ["number", "text"]);
+
+    const finals = document.getElementById("finals");
+    const roundq = document.getElementById("rounding");
+    roundq.checked = true; // default set to true
+    let round = roundq.checked;
+
+    function calcMinFinal() {
+        const data = getTableData(finals)[0];
+        const cur = data[0].value;
+        let desired = data[1].value;
+        if (isNaN(parseFloat(desired))) desired = letterToPercent(desired);
+        if (roundq.checked) desired = parseFloat(desired) - 0.5;
+        let res = ((100 * desired - 80 * cur) / 20).toFixed(2);
+
+        if (res > 100 || res < 0) {
+            if (cur.length == 0) res = "";
+            else res += " (Impossible)";
+        }
+        else if (isNaN(res)) res = "";
+        document.getElementById("finals-result").innerHTML = res;
+    }
+
+    roundq.addEventListener("change", () => {
+        calcMinFinal();
+    });
+
+    finals.addEventListener("change", () => {
+        calcMinFinal();
+    });
+    console.log(getTableData(finals));
+
+    document.getElementById("addValue").addEventListener("keydown", (e) => {
+        if (e.key == "Enter") {
+            addRows("asmt", "addValue");
+        }
+    });
+</script>
+
+</html>
