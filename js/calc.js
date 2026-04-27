@@ -156,6 +156,7 @@ function addRows(tableId, nInput, col = 2, types = []) { // id of target table, 
 }
 
 function addRow(tableId, col = 2, types = [], autoupdate = false) {
+	// target table ID, # of columns, input types, automatically update nav table
 	const table = document.getElementById(tableId);
 	const row = document.createElement("tr");
 	table.append(row);
@@ -269,6 +270,13 @@ function calcDomainSem(semester, final) {
 const pBoundaries = [98, 93, 90, 87, 83, 80, 77, 73, 70, 67, 63, 60, 50, 0];
 const letterGrade = ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F", "NG"];
 const point = [4, 4, 3.67, 3.33, 3, 2.67, 2.33, 2, 1.67, 1.33, 1, 0.67, 0, 0];
+
+function letterToPercent(letter) {
+	for (let i = 0; i < letterGrade.length; i++) {
+		if (letter == letterGrade[i]) return pBoundaries[i];
+	}
+	return NaN;
+}
 
 function percentToLetter(percentage) {
 	for (let i = 0; i < pBoundaries.length; i++) {
