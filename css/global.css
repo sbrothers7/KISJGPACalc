@@ -217,7 +217,9 @@ td input {
 }
 
 label {
-    font-size: 15px;
+    font-size: 14px;
+    font-weight: 300;
+    user-select: none;
 }
 
 input::-webkit-outer-spin-button,
@@ -292,7 +294,7 @@ input.addRow {
 }
 
 .header {
-    align-items: center;
+    align-items: top;
     display: flex;
     justify-content: space-between;
     gap: 3em;

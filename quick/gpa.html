@@ -27,7 +27,7 @@
 			<input id="addValue" class="addRow" type="number" maxlength="2" value="1" min="1" max="10">
 			<p>Row(s)</p>
 			<button style="padding: 0.3em 0.4em;"
-				onclick="addRows('s1', 'addValue'); addRows('s2', 'addValue')">↵</button>
+				onclick="addRows('s1', 'addValue', 2, ['subject', 'text']); addRows('s2', 'addValue', 2, ['subject', 'text'])">↵</button>
 		</div>
 		<p id="watermark"><i>Copyright © 2026 Siwool Um</i></p>
 	</div>
@@ -139,8 +139,8 @@
 
 	document.getElementById("addValue").addEventListener("keydown", (e) => {
 		if (e.key == "Enter") {
-			addRows("s1", "addValue");
-			addRows("s2", "addValue");
+			addRows("s1", "addValue", 2, ["subject", "text"]);
+			addRows("s2", "addValue", 2, ["subject", "text"]);
 		}
 	});
 </script>
