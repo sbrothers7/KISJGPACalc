@@ -32,16 +32,21 @@
 		</div>
 
 		<div class="inlineflex">
-			<p>Add</p>
+			<p>Rows to add:</p>
 			<input id="addValue" class="addRow" type="number" maxlength="2" value="1" min="1" max="10">
-			<p>Row(s)</p>
-			<button class="add-btn" onclick="addRows('s1', 'addValue'); addRows('s2', 'addValue')">↵</button>
+			<button class="add-btn" onclick="addRows('s1', 'addValue'); addRows('s2', 'addValue')">Add</button>
 		</div>
 		<p id="watermark"><i>Copyright © 2026 Siwool Um</i></p>
 	</div>
 	<sidebar-anchor></sidebar-anchor>
 
 	<div class="main">
+		<div class="container">
+			<div>
+				<input type="checkbox" id="core"></input>
+				<label for="core">Core Subject/AP S1</label>
+			</div>
+		</div>
 		<div class="container">
 			<div class="section">
 				<table id="s1" class="data">
@@ -115,8 +120,8 @@
 			</div>
 		</div>
 
-		<div class="section center">
-			<table id="final" class="single-table hidden data">
+		<div class="container center">
+			<table id="final" class="hidden data single-table">
 				<caption>Finals</caption>
 				<tr>
 					<th>Final S1</th>
@@ -142,13 +147,20 @@
 	const ap = document.getElementById("apcheck");
 	const fullyear = document.getElementById("yearcheck");
 	const privacy = document.getElementById("privacy");
+	const core = document.getElementById("core");
 
 	const finalTable = document.getElementById("final");
 	const s2final = document.getElementById("s2final");
 
 	function updateFinalTable() {
-		if (final.checked) finalTable.classList.remove("hidden");
-		else finalTable.classList.add("hidden");
+		if (final.checked) {
+			finalTable.classList.remove("hidden");
+			core.parentNode.classList.add("hidden");
+		}
+		else {
+			finalTable.classList.add("hidden");
+			core.parentNode.classList.remove("hidden");
+		}
 	}
 
 	// init
@@ -161,8 +173,8 @@
 	final.addEventListener("change", updateFinalTable);
 
 	finalTable.addEventListener("change", () => {
-		calcDomainSem(1, final.checked);
-		calcDomainSem(2, final.checked);
+		calcDomainSem(1, final.checked, core.checked, finalTable);
+		calcDomainSem(2, final.checked, core.checked, finalTable);
 	});
 
 	ap.addEventListener("change", () => {
@@ -171,6 +183,7 @@
 			final.disabled = true;
 			s2final.value = "No finals for S2";
 			s2final.disabled = true;
+			core.parentNode.classList.add("hidden");
 		} else {
 			final.disabled = false;
 			s2final.value = "";
@@ -192,6 +205,11 @@
 		}
 	});
 
+	core.addEventListener("change", () => {
+		calcDomainSem(1, final.checked, core.checked, finalTable);
+		calcDomainSem(2, final.checked, core.checked, finalTable);
+	});
+
 	for (let i = 1; i < 3; i++) {
 		const table = document.getElementById(`s${i}`);
 
@@ -204,9 +222,12 @@
 				document.getElementById(`s${i}_savg`).innerHTML = avg(getCol(table, 1), true);
 			}
 
-			calcDomainSem(i);
+			calcDomainSem(i, final.checked, core.checked, finalTable);
 		});
 	}
+
+	const s1 = document.getElementById("s1");
+	window.onresize = () => { finalTable.style.width = s1.offsetWidth + 'px'; };
 </script>
 
 <style>

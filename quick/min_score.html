@@ -22,38 +22,51 @@
             <label for="privacy">Privacy Mode</label>
             <br>
             <input type="checkbox" id="rounding">
-            <label for="roudning">Round Scores</label>
+            <label for="rounding">Round Scores</label>
             <br>
             <p class="desc"><i>Sets the boundary for an A to 92.5 instead of 93, and so on.</i></p>
         </div>
-
-        <!-- <div class="inlineflex">
-            <p>Add</p>
-            <input id="addValue" class="addRow" type="number" maxlength="2" value="1" min="1" max="10">
-            <p>Row(s)</p>
-            <button style="padding: 0.3em 0.4em;" onclick="addRows('asmt', 'addValue')">↵</button>
-        </div> -->
         <p id="watermark"><i>Copyright © 2026 Siwool Um</i></p>
     </div>
     <sidebar-anchor></sidebar-anchor>
 
     <div class="main">
         <div class="container">
-            <div class="section">
-                <table id="finals" class="data">
-                    <caption>Final Exam</caption>
+            <div class="section asmt">
+                <table id="asmt" class="data">
+                    <caption>Assessments</caption>
                     <tr>
-                        <th>Current Grade</th>
-                        <th>Desired Grade</th>
+                        <th>Formative AVG</th>
+                        <th>Summative AVG</th>
+                        <th>Deisred Grade</th>
                     </tr>
                 </table>
+
+                <div class="header">
+                    <div>
+                        <p class="title">Assessment Type</p>
+                        <input id="f" type="radio" name="type">
+                        <label for="f">Formative</label>
+                        <br>
+                        <input id="s" type="radio" name="type">
+                        <label for="s">Summative</label>
+                        <br>
+                        <input id="final" type="radio" name="type">
+                        <label for="final">Final Exam</label>
+                    </div>
+                    <div>
+                        <p class="title">Course Type</p>
+                        <input id="c" type="checkbox">
+                        <label for="c">Core Subject/AP S1</label>
+                    </div>
+                </div>
 
                 <table class="result-table result">
                     <tr>
                         <th>Result</th>
                     </tr>
                     <tr>
-                        <td id="finals-result" class="result-td"></td>
+                        <td id="asmt-result" class="result-td"></td>
                     </tr>
                 </table>
             </div>
@@ -70,41 +83,73 @@
 
 <script>
     // init
-    addRow("finals", 2, ["number", "text"]);
+    addRow("asmt", 3, ["number", "number", "text"]);
+    makeNavTable("asmt");
 
-    const finals = document.getElementById("finals");
+    const asmt = document.getElementById("asmt");
+    const f = document.getElementById("f");
+    const s = document.getElementById("s");
+    const final = document.getElementById("final");
+    const c = document.getElementById("c");
     const roundq = document.getElementById("rounding");
     roundq.checked = true; // default set to true
+    s.checked = true;
+    final.disabled = true;
     let round = roundq.checked;
 
-    function calcMinFinal() {
-        const data = getTableData(finals)[0];
-        const cur = data[0].value;
-        let desired = data[1].value;
+    function handleDesired(desired) {
         if (isNaN(parseFloat(desired))) desired = letterToPercent(desired);
-        if (roundq.checked) desired = parseFloat(desired) - 0.5;
-        let res = ((100 * desired - 80 * cur) / 20).toFixed(2);
-
-        if (res > 100 || res < 0) {
-            if (cur.length == 0) res = "";
-            else res += " (Impossible)";
+        if (roundq.checked) {
+            desired = Math.round(desired) - 0.5; // account for decimal values 
         }
-        else if (isNaN(res)) res = "";
-        document.getElementById("finals-result").innerHTML = res;
+        return desired;
+    }
+
+    function calcMin() {
+        const data = getTableData(asmt)[0];
+        const curf = data[0].value;
+        const curs = data[1].value;
+        let desired = handleDesired(data[2].value);
+        let res;
+
+        if (f.checked) {
+            if (c.checked) res = (80 * desired - 60 * curs) / 20
+            else res = (100 * desired - 80 * curs) / 20;
+        }
+        else if (s.checked) {
+            if (c.checked) res = (80 * desired - 20 * curf) / 60
+            else res = (100 * desired - 20 * curs) / 80;
+        }
+        else if (final.checked) {
+            res = (100 * desired - 60 * curs - 20 * curf) / 20;
+        }
+
+        const result_cell = document.getElementById("asmt-result");
+
+        // console.log(res);
+        if (!isNaN(res)) {
+            result_cell.innerHTML = res.toFixed(2);
+            if (res > 100) result_cell.innerHTML += " (Impossible)";
+        }
+        else result_cell.innerHTML = "";
     }
 
     roundq.addEventListener("change", () => {
-        calcMinFinal();
+        calcMin();
     });
 
-    finals.addEventListener("change", () => {
-        calcMinFinal();
+    document.querySelector(".asmt").addEventListener("change", () => {
+        calcMin();
     });
-    console.log(getTableData(finals));
 
-    document.getElementById("addValue").addEventListener("keydown", (e) => {
-        if (e.key == "Enter") {
-            addRows("asmt", "addValue");
+    c.addEventListener("change", () => {
+        if (c.checked) {
+            final.disabled = false;
+        }
+        else {
+            final.disabled = true;
+            f.checked = true;
+            final.checked = false;
         }
     });
 </script>

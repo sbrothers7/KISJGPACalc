@@ -242,7 +242,7 @@ function avg(list, parsetype = 0, weighted = false, sf = 2) {
 	return res;
 }
 
-function calcDomainSem(semester, final) {
+function calcDomainSem(semester, final, core, finalTable) {
 	const favg = parseFloat(document.getElementById(`s${semester}_favg`).innerHTML);
 	const savg = parseFloat(document.getElementById(`s${semester}_savg`).innerHTML);
 	const target = document.getElementById(`s${semester}domain`);
@@ -253,6 +253,10 @@ function calcDomainSem(semester, final) {
 	}
 
 	let res;
+	let data = getTableData(finalTable);
+	for (let i = 0; i < data.length; i++) {
+		if (data[0][i].value == "") final = false;
+	}
 
 	if (final) {
 		let finalGrade = parseFloat(document.getElementById(`s${semester}final`).value);
@@ -260,7 +264,8 @@ function calcDomainSem(semester, final) {
 		else res = parseFloat(((favg * 20 + savg * 60 + finalGrade * 20) / 100).toFixed(1));
 	}
 	else {
-		res = parseFloat(((favg * 20 + savg * 80) / 100).toFixed(1));
+		if (core) res = parseFloat(((favg * 20 + savg * 60) / 80).toFixed(1));
+		else res = parseFloat(((favg * 20 + savg * 80) / 100).toFixed(1));
 	}
 	if (Number.isNaN(res)) res = !Number.isNaN(favg) ? favg : !Number.isNaN(savg) ? savg : "";
 	target.innerText = `${res} (${percentToLetter(res)})`;
