@@ -89,6 +89,7 @@ function setupSubjects() {
 		"Korean Language",
 		"Korean Social Studies",
 		"Linear Algebra",
+		"Marine Science",
 		"Modern Band",
 		"Movement & Expression",
 		"Multivariable Calculus",
